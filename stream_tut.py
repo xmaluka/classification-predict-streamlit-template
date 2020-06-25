@@ -135,15 +135,17 @@ def main():
         if st.button('Classify'):
             # clean User tweet
             tweet_text = cleaning_fun(tweet_text)
-            count_vec.transform([tweet_text])
-            model_select = st.selectbox('select models',list(models.keys()))
-    
+            tweet_text = count_vec.transform([tweet_text]).toarray()
+            model_select = st.radio('select models',list(models.keys()))
             if model_select == 'LogisticRegressor':
-                st.write(1+1) 
+                prediction = logistic_reg.predict(tweet_text)
+                st.success("Text Categorized as: {}".format(prediction))                
             if model_select == 'SupportVector':
-                st.write(models[model_select]+str(2))
+                prediction = linearsvc.predict(tweet_text)
+                st.success("Text Categorized as: {}".format(prediction))
             if model_select == 'RandomForrest':
-                st.write(models[model_select] + str(1))
+                prediction = randomforest.predict(tweet_text)
+                st.success("Text Categorized as: {}".format(prediction))
 
 if __name__ == '__main__':
     main()
