@@ -167,7 +167,7 @@ def main():
                     'through streamlined marketing compaigns for your target audience.')
 
     if selection == 'Explainatory Data Analysis' :
-        st.subheader("Work In Progress...")
+        st.subheader("Exploratory Data analysis")
         empty_df = pd.DataFrame()
         classes = st.multiselect('Which classes would you like to view?',['Agnostic', 'Neutral', 'News', 'Believer'])
         for sentiment in classes:
