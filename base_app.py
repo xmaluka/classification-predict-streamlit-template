@@ -48,18 +48,18 @@ from nltk.tokenize import TreebankWordTokenizer
 import re
 
 
-# Load models
+#Load models
 logistic_reg = joblib.load(open(os.path.join('resources/pickles/logisticreg.pkl'),"rb"))
 linearsvc = joblib.load(open(os.path.join('resources/pickles/linearsvc.pkl'),"rb"))
 randomforest = joblib.load(open(os.path.join('resources/pickles/randomforest.pkl'),"rb"))
 
-# Load Vectorizers
+### Load Vectorizers
 count_vectorizer = open('resources/pickles/countvec.pkl','rb')
 count_vec = joblib.load(count_vectorizer)
 tfidf_vectorizer = open('resources/pickles/tfidf.pkl','rb')
 tfidf_vec = joblib.load(tfidf_vectorizer)
 
-# Loading raw data
+### Loading raw data
 raw = pd.read_csv("resources/train.csv")
 labels_dict = {-1: 'Agnostic',0: 'Neutral',1: 'Believer',2: 'News'}
 raw.replace({'sentiment': labels_dict}, inplace=True)
@@ -97,6 +97,7 @@ def cleaning_fun(tweet):
     tweet = ' '.join([word for word in tweet if word not in stop_words])
     return(tweet)
 @st.cache(show_spinner=False)
+
 def word_count(df,Corpus,len1):
     """Output graph of most frequent words in each class
        given a dataframe with a class column and a corpus """
@@ -122,6 +123,8 @@ def word_count(df,Corpus,len1):
     # word_count_plt.set_title(f'{stance}',fontsize=15)
     return(word_count_plt.figure)
 @st.cache(show_spinner=False)
+
+## Word Cloud
 def word_cloud(input_df,Corpus):
     """Function output the wordcloud of a class given
        a dataframe with a sentiment column and a corpus"""
@@ -139,10 +142,9 @@ clean_corpus = [cleaning_fun(tweet) for tweet in raw_corpus]
 
 def main():
     """Streamlit App """
-    
     html_temp = """
 	<div 
-    style="background-color:white;padding:20px">
+    style = "background-color:white;padding:20px">
 	<h2 style="color:green;text-align:center;">PLANET DATA TWEET CLASSIFIER</h2>
 	</div>
     
@@ -150,9 +152,9 @@ def main():
     
     st.markdown(html_temp,unsafe_allow_html=True)
     
-    # Creating sidebar with selection box
+    # Creating sidebar 
     
-    options = ['Information',"Analyse Tweet", 'Explainatory Data Analysis','View Twitter Hashtags', 'View Raw Data']
+    options = ['Information','Analyse Tweet','View Raw Data', 'Top words EDA','View Twitter Hashtags',]
     selection = st.sidebar.selectbox(label="Choose Tab", options=options)
                                     
                                     
@@ -165,9 +167,10 @@ def main():
                     'orgarnistion achieve sustainable growth. The Twitter sentiment analysis allows you '\
                     'to maintain guided business practices which will in turn assist identify niches in the market '\
                     'through streamlined marketing compaigns for your target audience.')
-
-    if selection == 'Explainatory Data Analysis' :
-        st.subheader("Exploratory Data analysis")
+    ## EDA
+    
+    if selection == 'Top words EDA' :
+        ##st.subheader("Top words visualiser with a word coud functionality")
         empty_df = pd.DataFrame()
         classes = st.multiselect('Which classes would you like to view?',['Agnostic', 'Neutral', 'News', 'Believer'])
         for sentiment in classes:
@@ -214,26 +217,11 @@ def main():
             prediction = picked_model.predict(vect_text)
             st.success(f'Tweet is : {prediction[0]}')
               
-            # if prediction[0] == 0:
-                # prediction = 'Neutral'
-                # st.warning("Tweet is : {}".format(prediction))
-
-            # elif prediction[0] == 1:
-                # prediction = 'Beleivers'
-                # st.success("Tweet is : {}".format(prediction))
-
-            # elif prediction[0] == 2:
-                # prediction = 'News'
-                # st.info("Tweet is : {}".format(prediction))
-
-            # else:
-                # prediction = 'Agnostic'
-                # st.error("Tweet is : {}".format(prediction))
 
     if selection == "View Twitter Hashtags":
-        st.subheader('Green Speak Hashtags')
+        st.subheader('Green Speak Agnostic Hashtags')
         num_hash = st.slider('Drag the slider' , 1, 20 )
-        if st.button("Generate"):           
+        if st.button("Show"):           
             rand_hash = random.sample(agnostic,num_hash) 
             for i in range(len(rand_hash)):                
                 st.success(rand_hash[i])
@@ -253,20 +241,19 @@ def main():
     
 # Popular Hashtags
 
-agnostic = ['#climate','#globalwarming','#climatechange','#ImVotingBecause','#COP22',
- '#ParisAgreement','#ActOnClimate','#globalwarming','#environment',
- '#BeforetheFlood','#NoDAPL','#science','#ClimateCounts','#ClimateAction','#qanda',
- '#EarthDay','#EarthToMarrakech','#EPA','#ClimateChangeIsReal',
- '#EarthHour','#Women4Climate','#ClimateMarch','#Africa','#climatemarch',
- '#Cities4Climate','#actonclimate','#itstimetochange','#SDGs','#CleanPowerPlan',
- '#SaveTheEPA','#swingdist','#energy','#education','#StrongerTogether','#globalgoals',
- '#agriculture','#IoT','#Sustainability','#StepsToReverseClimateChange','#globalcitizen',
- '#IntForestDay','#adaptation','#marchforscience','#vegan','#WhyIMarch','#WorldVeganDay',
- '#health','#ClimateFacts','#StandUp','#ClimateofHope','#EarthHourUK','#ThursdayThoughts',
- '#cleanenergy','#showthelove','#MyClimateAction','#Climatechange','#WomensMarch',
- '#NatGeo','#beforetheflood','#actuallivingscientist','#G20','#QandA','#green','#eco',
- '#GreenNewDeal','#UniteBlue','#MarchForScience','#SDG13','#WEF','#Analytics','#deforestation',
- '#ClimateVoter','#Iamwithher','#SaveOurOcean','#AMJoy','#foodsecurity','#mitigation']
+agnostic = ['#Climate','#globalwarming','endangered','#Trump', '#climatechange',
+            '#ClimateVoter','#Iamwithher','#SaveOurOcean','#Africa',
+            '#ParisAgreement','#ActOnClimate','#globalwarming', '#Climatechange',
+            '#BeforetheFlood','#sustainability','#science','#ClimateCounts','#ClimateAction','#sea',
+            '#EarthDay','#EarthToMarrakech','#EPA','#ClimateChangeIsReal', '#deforestation'
+            '#EarthHour','#Women4Climate','#ClimateMarch','#Africa','#climatemarch',
+            '#Cities4Climate','#actonclimate','#itstimetochange','#SDGs','#CleanPowerPlan',
+            '#SaveTheEPA','#vegan','#WhyIMarch','#WorldVeganDay',
+            '#health','#ClimateFacts','#StandUp','#ClimateofHope','#GreenSummit','#ThursdayThoughts',
+            '#cleanenergy','#showthelove','#MyClimateAction',
+            '#NatGeo','#beforetheflood','#G20','#QandA','#green','#eco',
+            '#GreenNewDeal','#UniteBlue','#MarchForScience','#SDG13','#WEF','#Analytics',
+            ]
 
 # Required to let Streamlit instantiate our web app.  
 if __name__ == '__main__':
