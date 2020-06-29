@@ -173,12 +173,16 @@ def main():
         for sentiment in classes:
             empty_df = pd.concat([empty_df,raw[raw.sentiment==sentiment]])
         if len(classes) == 0:
-            st.write('No Classes selected')
+            st.write('')
         if st.checkbox('Top words per class'):
+            if len(classes) == 0:
+                st.warning('Please choose and option')
             if len(classes) > 0:
                 word_hash = st.slider('Drag the slider for top words' , 1, 15 )
                 st.write(word_count(empty_df,clean_corpus,word_hash))
         if st.checkbox('word_cloud'):
+            if len(classes) == 0:
+                st.warning('Please choose and option')
             if len(classes) > 0:
                 st.write(word_cloud(empty_df,clean_corpus))
     
